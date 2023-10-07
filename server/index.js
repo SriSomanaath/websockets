@@ -4,4 +4,6 @@ const wss = new WebSocket.Server({
     port:9876
 })
 
-console.log(`Say hi to webSocket on port 9876`)
+wss.on('connection', function(ws){
+ws.send('Hello from the server')
+})
