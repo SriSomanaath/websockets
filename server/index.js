@@ -5,5 +5,8 @@ const wss = new WebSocket.Server({
 })
 
 wss.on('connection', function(ws){
-ws.send('Hello from the server')
+ws.on('message', function(data){
+    ws.send(data)
 })
+})
+ 
