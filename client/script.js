@@ -14,15 +14,34 @@ server.onopen = function(){
 
 server.onmessage = function(event) {
     const { data } = event;
-    data.text().then(messageText => {
-        const newMessage = document.createElement('div');
-        newMessage.innerText = `Server says: ${messageText}`;
-        const res = document.getElementById('res');
-        res.appendChild(newMessage);
-    });
+    if (data instanceof Blob) {
+        generateMessageEntry(data, 'Server');
+    } else if (typeof data === 'string') {
+        generateMessageEntry(data, 'Server');
+    } else {
+        // Handle other data types or log an error.
+    }
 }
 
+function generateMessageEntry(msg, type) {
+    if (msg instanceof Blob) {
+        msg.text().then(messageText => {
+            const newMessage = document.createElement('div');
+            newMessage.innerText = `${type} says: ${messageText}`;
+            const res = document.getElementById('res');
+            res.appendChild(newMessage);
+        });
+    } else if (typeof msg === 'string') {
+        const newMessage = document.createElement('div');
+        newMessage.innerText = `${type} says: ${msg}`;
+        const res = document.getElementById('res');
+        res.appendChild(newMessage);
+    }
+}
+
+
 function sendMessage(){
-    const text = input.value; // Corrected variable name
+    const text = input.value;
+    generateMessageEntry(text, 'Client')
     server.send(text);
 }
